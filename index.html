@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ren Kato — YouTube Thumbnail Designer</title>
+<meta name="description" content="Premium YouTube thumbnail design for creators who take growth seriously. 500+ thumbnails shipped, 3.4× average CTR lift, 24hr turnaround.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23FF9500'/%3E%3Cstop offset='1' stop-color='%23FA7800'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='100' height='100' rx='24' fill='%23080808'/%3E%3Cpolygon points='38,28 74,50 38,72' fill='url(%23g)'/%3E%3C/svg%3E">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+
+<style>
+/* ============ RESET ============ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+img,svg{display:block;max-width:100%;}
+button{font:inherit;color:inherit;background:none;border:none;cursor:pointer;}
+a{color:inherit;text-decoration:none;}
+ul{list-style:none;}
+input,textarea{font:inherit;color:inherit;}
+
+/* ============ TOKENS ============ */
+:root{
+  --void:#080808;
+  --ink:#101014;
+  --surface:rgba(255,255,255,0.045);
+  --surface-2:rgba(255,255,255,0.075);
+  --border:rgba(255,255,255,0.09);
+  --border-soft:rgba(255,255,255,0.06);
+  --text:#F5F3EF;
+  --text-dim:rgba(245,243,239,0.68);
+  --text-faint:rgba(245,243,239,0.42);
+  --ember:#FA7800;
+  --magenta:#FF9500;
+  --violet:#E85D04;
+  --gold:#FFB020;
+  --grad-signature:linear-gradient(115deg,#FF9500 0%,#FA7800 50%,#E85D04 100%);
+  --grad-signature-soft:linear-gradient(115deg,rgba(255,149,0,.25) 0%,rgba(250,120,0,.25) 50%,rgba(232,93,4,.25) 100%);
+  --r-sm:12px;
+  --r-md:20px;
+  --r-lg:28px;
+  --r-pill:100px;
+  --ease:cubic-bezier(.16,1,.3,1);
+  --ease-soft:cubic-bezier(.22,1,.36,1);
+  --container:1240px;
+}
+
+/* ============ BASE ============ */
+body{
+  background:var(--void);
+  color:var(--text);
+  font-family:'Inter',system-ui,sans-serif;
+  font-size:16px;
+  line-height:1.6;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{font-family:'Bricolage Grotesque',serif;font-weight:800;letter-spacing:-0.02em;}
+::selection{background:var(--violet);color:#fff;}
+:focus-visible{outline:2px solid var(--violet);outline-offset:3px;border-radius:4px;}
+
+/* grain overlay */
+body::before{
+  content:'';position:fixed;inset:0;z-index:9999;pointer-events:none;
+  opacity:.035;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+}
+
+/* ============ UTILITIES ============ */
+.container{max-width:var(--container);margin-inline:auto;padding-inline:clamp(20px,5vw,48px);}
+.section{padding-block:clamp(72px,10vw,140px);position:relative;}
+.eyebrow{
+  font-family:'IBM Plex Mono',monospace;font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--text-faint);display:inline-flex;align-items:center;gap:10px;margin-bottom:18px;font-weight:500;
+}
+.eyebrow::before{content:'';width:22px;height:1px;background:var(--grad-signature);display:inline-block;}
+.h2{font-size:clamp(2rem,4vw,3.25rem);line-height:1.02;margin-bottom:18px;}
+.sub{font-size:clamp(1rem,1.3vw,1.15rem);color:var(--text-dim);max-width:560px;font-weight:400;}
+.section-head{margin-bottom:clamp(40px,6vw,72px);}
+.section-head.center{text-align:center;margin-inline:auto;}
+.section-head.center .sub{margin-inline:auto;}
+.grad-text{
+  background:var(--grad-signature);-webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.glass{
+  background:var(--surface);border:1px solid var(--border);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+}
+
+.btn{
+  display:inline-flex;align-items:center;gap:8px;padding:16px 30px;border-radius:var(--r-pill);
+  font-weight:600;font-size:.95rem;white-space:nowrap;transition:transform .5s var(--ease),box-shadow .5s var(--ease),background .3s var(--ease-soft),border-color .3s;
+}
+.btn svg{width:16px;height:16px;transition:transform .4s var(--ease);}
+.btn:hover svg{transform:translateX(4px);}
+.btn-primary{background:var(--grad-signature);color:#FFFFFF;box-shadow:0 8px 30px -8px rgba(250,120,0,.45);}
+.btn-primary:hover{transform:translateY(-2px) scale(1.02);box-shadow:0 14px 40px -10px rgba(255,149,0,.55);}
+.btn-ghost{background:rgba(255,255,255,.02);border:2px solid #FA7800;color:var(--text);}
+.btn-ghost:hover{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.2);transform:translateY(-2px);}
+.btn-sm{padding:11px 22px;font-size:.85rem;}
+
+/* reveal-on-scroll */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .9s var(--ease),transform .9s var(--ease);transition-delay:var(--d,0s);}
+.reveal.is-visible{opacity:1;transform:translateY(0);}
+
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto;}
+  .reveal{transition:none;opacity:1;transform:none;}
+  .marquee-track{animation:none !important;}
+  *{animation-duration:.001ms !important;}
+}
+
+/* ============ NAV ============ */
+.nav{
+  position:fixed;top:0;left:0;right:0;z-index:500;
+  padding:18px clamp(20px,5vw,48px);
+  display:flex;align-items:center;justify-content:space-between;
+  transition:background .4s var(--ease-soft),border-color .4s,backdrop-filter .4s,padding .4s;
+  border-bottom:1px solid transparent;
+}
+.nav.scrolled{
+  background:rgba(8,8,8,.66);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  border-bottom:1px solid var(--border-soft);padding-block:12px;
+}
+.logo{display:flex;align-items:center;gap:9px;font-family:'Bricolage Grotesque',serif;font-weight:800;font-size:1.05rem;letter-spacing:-0.01em;}
+.logo-mark{width:30px;height:30px;border-radius:9px;background:var(--void);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.logo-mark svg{width:12px;height:12px;}
+.nav-links{display:flex;align-items:center;gap:36px;}
+.nav-links a{font-size:.9rem;color:var(--text-dim);position:relative;transition:color .3s;}
+.nav-links a::after{content:'';position:absolute;left:0;bottom:-5px;width:0;height:1px;background:var(--grad-signature);transition:width .35s var(--ease);}
+.nav-links a:hover{color:var(--text);}
+.nav-links a:hover::after{width:100%;}
+.nav-actions{display:flex;align-items:center;gap:18px;}
+.burger{display:none;width:40px;height:40px;align-items:center;justify-content:center;border-radius:10px;background:var(--surface);border:1px solid var(--border);}
+.burger svg{width:18px;height:18px;}
+
+.mobile-menu{
+  position:fixed;inset:0;z-index:600;background:rgba(8,8,8,.97);backdrop-filter:blur(20px);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:32px;
+  opacity:0;visibility:hidden;transform:translateY(-12px);transition:opacity .4s var(--ease),visibility .4s,transform .4s var(--ease);
+}
+.mobile-menu.open{opacity:1;visibility:visible;transform:translateY(0);}
+.mobile-menu a{font-family:'Bricolage Grotesque',serif;font-size:1.8rem;font-weight:700;color:var(--text);}
+.mobile-menu .close-btn{position:absolute;top:22px;right:22px;width:44px;height:44px;border-radius:12px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;}
+.mobile-menu .close-btn svg{width:18px;height:18px;}
+
+/* ============ HERO ============ */
+.hero{
+  min-height:100svh;display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden;
+  padding-top:110px;padding-bottom:60px;
+}
+.blob{position:absolute;border-radius:50%;filter:blur(110px);opacity:.32;pointer-events:none;z-index:0;}
+.blob-1{width:520px;height:520px;background:var(--ember);top:-140px;left:-140px;animation:float1 22s ease-in-out infinite;}
+.blob-2{width:460px;height:460px;background:var(--violet);bottom:-120px;right:-120px;animation:float2 26s ease-in-out infinite;}
+@keyframes float1{0%,100%{transform:translate(0,0);}50%{transform:translate(60px,40px);}}
+@keyframes float2{0%,100%{transform:translate(0,0);}50%{transform:translate(-50px,-30px);}}
+
+.cursor-glow{
+  position:absolute;width:520px;height:520px;border-radius:50%;pointer-events:none;z-index:1;
+  background:radial-gradient(circle,rgba(250,120,0,.18),transparent 70%);
+  transform:translate(var(--cx,-9999px),var(--cy,-9999px)) translate(-50%,-50%);
+  transition:opacity .3s;
+}
+
+.hero-visual{
+  position:absolute;inset:0;z-index:0;
+  display:flex;flex-direction:column;justify-content:space-between;gap:clamp(14px,2.4vw,26px);
+  padding-block:clamp(70px,10vw,120px);
+  transform:perspective(1400px) rotateX(10deg) scale(1.06);
+  mask-image:linear-gradient(to bottom,transparent,black 20%,black 78%,transparent),
+             linear-gradient(to right,transparent,black 12%,black 88%,transparent);
+  mask-composite:intersect;-webkit-mask-composite:source-in;
+  -webkit-mask-image:linear-gradient(to bottom,transparent,black 20%,black 78%,transparent),
+             linear-gradient(to right,transparent,black 12%,black 88%,transparent);
+}
+.marquee{overflow:hidden;width:100%;}
+.marquee-track{display:flex;gap:20px;width:max-content;animation:scrollLeft 52s linear infinite;}
+.marquee-track.reverse{animation-name:scrollRight;animation-duration:60s;}
+.marquee-track.slow{animation-duration:75s;}
+@keyframes scrollLeft{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+@keyframes scrollRight{from{transform:translateX(-50%);}to{transform:translateX(0);}}
+.hero-visual .thumb-card{width:220px;flex-shrink:0;opacity:.8;}
+.hero-scrim{position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(180deg,rgba(6,6,9,.6) 0%,rgba(6,6,9,.4) 22%,rgba(6,6,9,.46) 50%,rgba(6,6,9,.4) 78%,rgba(6,6,9,.6) 100%);}
+
+.hero-content{position:relative;z-index:2;text-align:center;margin-inline:auto;padding-inline:20px;}
+.hero-content::before{
+  content:'';position:absolute;inset:-40px -60px;z-index:-1;border-radius:60px;
+  background:radial-gradient(60% 70% at 50% 50%,rgba(8,8,8,.86),rgba(8,8,8,.5) 60%,transparent 85%);
+}
+.hero-content h1{font-size:clamp(2.6rem,6.4vw,5.6rem);line-height:.98;margin-bottom:22px;}
+.hero-content .sub{max-width:520px;margin-inline:auto;margin-bottom:36px;font-size:clamp(1rem,1.3vw,1.2rem);}
+.hero-ctas{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;}
+
+.scroll-cue{
+  position:relative;z-index:2;margin-top:clamp(30px,5vw,54px);display:flex;flex-direction:column;align-items:center;gap:10px;
+  font-family:'IBM Plex Mono',monospace;font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--text-faint);
+}
+.scroll-cue .line{width:1px;height:34px;background:linear-gradient(to bottom,var(--text-faint),transparent);animation:scrollPulse 2s ease-in-out infinite;}
+@keyframes scrollPulse{0%,100%{opacity:.2;}50%{opacity:1;}}
+
+/* ============ THUMB CARD SYSTEM ============ */
+.thumb-card{
+  position:relative;border-radius:16px;overflow:hidden;container-type:inline-size;
+  box-shadow:0 20px 50px -20px rgba(0,0,0,.6);
+  aspect-ratio:16/9;
+}
+.thumb-card.ratio-9-16{aspect-ratio:9/16;}
+.thumb-tag{
+  position:absolute;top:10px;left:10px;z-index:3;font-family:'IBM Plex Mono',monospace;
+  font-size:clamp(8px,2.6cqi,10.5px);letter-spacing:.1em;text-transform:uppercase;font-weight:500;
+  padding:4px 10px;border-radius:100px;background:rgba(0,0,0,.4);backdrop-filter:blur(6px);color:rgba(255,255,255,.85);
+}
+.thumb-stat{
+  position:absolute;bottom:10px;right:10px;z-index:3;font-family:'IBM Plex Mono',monospace;
+  font-size:clamp(8px,2.4cqi,10px);letter-spacing:.04em;padding:4px 9px;border-radius:100px;
+  background:rgba(0,0,0,.4);backdrop-filter:blur(6px);color:var(--gold);opacity:0;transform:translateY(6px);
+  transition:opacity .4s var(--ease),transform .4s var(--ease);
+}
+.thumb-card:hover .thumb-stat{opacity:1;transform:translateY(0);}
+.thumb-headline{
+  position:absolute;left:12px;right:12px;bottom:12px;z-index:2;
+  font-family:'Bricolage Grotesque',serif;font-weight:800;text-transform:uppercase;
+  font-size:clamp(13px,9.5cqi,32px);line-height:.94;letter-spacing:-.01em;color:#fff;
+  text-shadow:0 2px 18px rgba(0,0,0,.35);
+}
+.thumb-scrim{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.55),transparent 55%);z-index:1;}
+.thumb-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;}
+.shape-ring{position:absolute;border:3px solid rgba(255,255,255,.75);border-radius:50%;z-index:1;}
+.shape-badge{
+  position:absolute;z-index:2;font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:clamp(8px,2.4cqi,11px);
+  background:var(--gold);color:#1a1200;padding:5px 11px;border-radius:6px;transform:rotate(-6deg);letter-spacing:.03em;
+}
+.shape-arrow{position:absolute;z-index:2;width:clamp(24px,14cqi,56px);height:auto;filter:drop-shadow(0 4px 10px rgba(0,0,0,.4));}
+
+.thumb-1{background:radial-gradient(120% 120% at 15% 15%,#6d3cf7 0%,transparent 55%),linear-gradient(135deg,#3a1478,#161c6e);}
+.thumb-2{background:radial-gradient(120% 120% at 85% 15%,#22c9e0 0%,transparent 55%),linear-gradient(135deg,#0c4a6e,#1e2a78);}
+.thumb-3{background:radial-gradient(120% 120% at 15% 85%,#ffd76a 0%,transparent 50%),linear-gradient(135deg,#065f46,#0d3b2e);}
+.thumb-4{background:radial-gradient(120% 120% at 85% 20%,#ffb84d 0%,transparent 55%),linear-gradient(135deg,#c2410c,#a21caf);}
+.thumb-5{background:radial-gradient(120% 120% at 20% 20%,#ff8a4d 0%,transparent 55%),linear-gradient(135deg,#7f1d1d,#9a3412);}
+.thumb-6{background:radial-gradient(120% 120% at 80% 80%,#f472b6 0%,transparent 55%),linear-gradient(135deg,#701a4f,#5b21b6);}
+.thumb-7{background:radial-gradient(120% 120% at 20% 80%,#f43f5e 0%,transparent 50%),linear-gradient(135deg,#0b1547,#1e1b4b);}
+.thumb-8{background:radial-gradient(120% 120% at 80% 20%,#5eead4 0%,transparent 55%),linear-gradient(135deg,#0f766e,#1e3a8a);}
+.thumb-9{background:radial-gradient(120% 120% at 50% 0%,#e879f9 0%,transparent 55%),linear-gradient(135deg,#5b21b6,#831843);}
+.thumb-10{background:radial-gradient(120% 120% at 50% 100%,#fb7185 0%,transparent 55%),linear-gradient(135deg,#111,#7f1d1d);}
+
+/* ============ STATS ============ */
+.stats-wrap{margin-top:-64px;position:relative;z-index:5;padding-inline:clamp(20px,5vw,48px);}
+.stats-bar{
+  border-radius:var(--r-lg);padding:clamp(28px,4vw,44px) clamp(20px,4vw,40px);
+  display:grid;grid-template-columns:repeat(4,1fr);gap:20px;max-width:var(--container);margin-inline:auto;
+}
+.stat{text-align:center;border-right:1px solid var(--border-soft);}
+.stat:last-child{border-right:none;}
+.stat-num{font-family:'Bricolage Grotesque',serif;font-weight:800;font-size:clamp(1.7rem,3.4vw,2.7rem);line-height:1;}
+.stat-label{margin-top:8px;font-size:.78rem;color:var(--text-faint);font-family:'IBM Plex Mono',monospace;letter-spacing:.06em;text-transform:uppercase;}
+
+/* ============ PORTFOLIO ============ */
+.masonry{column-count:3;column-gap:22px;}
+.masonry .thumb-card{width:100%;margin-bottom:22px;break-inside:avoid;transition:transform .5s var(--ease),box-shadow .5s var(--ease);}
+.masonry .thumb-card:hover{transform:translateY(-6px) scale(1.015);box-shadow:0 30px 60px -20px rgba(0,0,0,.7);}
+
+/* ============ COMPARE ============ */
+.compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:36px;}
+.compare-block{}
+.compare-frame{
+  position:relative;aspect-ratio:16/9;border-radius:var(--r-md);overflow:hidden;cursor:ew-resize;
+  box-shadow:0 20px 50px -20px rgba(0,0,0,.6);user-select:none;touch-action:pan-y;
+}
+.compare-layer{position:absolute;inset:0;}
+.compare-before{clip-path:inset(0 calc(100% - var(--pct,50%)) 0 0);background:#2c2c2e;display:flex;align-items:center;justify-content:center;}
+.compare-before-inner{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-family:'Inter',sans-serif;font-weight:500;font-size:clamp(11px,3.4cqi,16px);color:rgba(255,255,255,.5);text-align:center;padding:0 10%;
+}
+.compare-handle{
+  position:absolute;top:0;bottom:0;left:var(--pct,50%);width:0;transform:translateX(-50%);
+  display:flex;align-items:center;justify-content:center;z-index:5;
+}
+.compare-handle::before{content:'';position:absolute;top:0;bottom:0;width:2px;background:rgba(255,255,255,.8);left:50%;transform:translateX(-50%);}
+.compare-grip{width:38px;height:38px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;gap:3px;box-shadow:0 6px 18px rgba(0,0,0,.4);}
+.compare-grip svg{width:16px;height:16px;color:#111;}
+.compare-label{position:absolute;top:12px;z-index:4;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.1em;padding:5px 12px;border-radius:100px;background:rgba(0,0,0,.45);backdrop-filter:blur(6px);}
+.compare-label-before{left:12px;}
+.compare-label-after{right:12px;}
+.compare-stat{margin-top:16px;text-align:center;font-family:'IBM Plex Mono',monospace;font-size:.85rem;color:var(--gold);letter-spacing:.03em;}
+
+/* ============ ABOUT ============ */
+.about-grid{display:grid;grid-template-columns:.82fr 1.18fr;gap:clamp(36px,6vw,80px);align-items:center;}
+.about-photo-wrap{position:relative;}
+.about-glow{position:absolute;inset:-40px;background:var(--ember);filter:blur(90px);opacity:.28;border-radius:50%;z-index:0;pointer-events:none;}
+.about-photo-frame{
+  position:relative;z-index:1;border-radius:var(--r-lg);overflow:hidden;aspect-ratio:4/5;
+  border:1px solid var(--border);background:var(--ink);
+}
+.about-photo-frame img{width:100%;height:100%;object-fit:cover;display:block;}
+.about-photo-frame::after{
+  content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,rgba(8,8,8,.65) 100%);pointer-events:none;
+}
+.about-badge{
+  position:absolute;z-index:2;bottom:18px;left:18px;display:inline-flex;align-items:center;gap:8px;
+  padding:9px 16px;border-radius:var(--r-pill);background:rgba(8,8,8,.55);border:1px solid rgba(255,255,255,.14);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);font-size:.8rem;font-weight:600;
+}
+.about-badge-dot{width:8px;height:8px;border-radius:50%;background:#3ddc84;box-shadow:0 0 0 3px rgba(61,220,132,.22);flex-shrink:0;}
+.about-text .eyebrow{margin-bottom:16px;}
+.about-text p.sub{max-width:560px;margin-bottom:0;}
+.about-text p.sub + p.sub{margin-top:16px;}
+.about-stats{display:flex;gap:clamp(20px,4vw,44px);margin-top:36px;flex-wrap:wrap;}
+.about-stat-num{font-family:'Bricolage Grotesque',serif;font-weight:800;font-size:clamp(1.6rem,2.6vw,2.1rem);line-height:1;}
+.about-stat-label{margin-top:8px;font-size:.78rem;color:var(--text-faint);font-family:'IBM Plex Mono',monospace;letter-spacing:.04em;}
+.about-text .hero-ctas{margin-top:40px;justify-content:flex-start;}
+
+/* ============ SERVICES ============ */
+.services-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;}
+.service-card{
+  border-radius:var(--r-md);padding:32px 26px;transition:transform .5s var(--ease),border-color .4s,background .4s;position:relative;overflow:hidden;
+}
+.service-card::before{
+  content:'';position:absolute;inset:0;opacity:0;background:var(--grad-signature-soft);transition:opacity .5s var(--ease);z-index:0;
+}
+.service-card:hover{transform:translateY(-6px);border-color:rgba(255,255,255,.18);}
+.service-card:hover::before{opacity:1;}
+.service-card>*{position:relative;z-index:1;}
+.service-num{font-family:'IBM Plex Mono',monospace;color:white;font-size:.8rem;margin-bottom:22px;}
+.service-card h3{font-size:1.25rem;margin-bottom:10px;}
+.service-card p{color:var(--text-dim);font-size:.92rem;}
+
+/* ============ PROCESS ============ */
+.workflow{display:grid;grid-template-columns:repeat(5,1fr);gap:18px;position:relative;}
+.workflow::before{content:'';position:absolute;top:26px;left:6%;right:6%;height:1px;background:linear-gradient(to right,transparent,var(--border),var(--border),transparent);z-index:0;}
+.wf-step{position:relative;z-index:1;}
+.wf-num{
+  width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-family:'Bricolage Grotesque',serif;font-weight:800;font-size:1rem;margin-bottom:22px;
+  background:var(--ink);border:1px solid var(--border);
+}
+.wf-step h3{font-size:1.05rem;margin-bottom:8px;}
+.wf-step p{color:var(--text-dim);font-size:.88rem;}
+
+/* ============ TESTIMONIALS ============ */
+.testi-row{display:flex;gap:22px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:10px;margin:0 -4px;scrollbar-width:none;}
+.testi-row::-webkit-scrollbar{display:none;}
+.testi-card{
+  scroll-snap-align:start;flex:0 0 min(88vw,380px);border-radius:var(--r-md);padding:30px 28px;display:flex;flex-direction:column;gap:22px;
+}
+.testi-stars{display:flex;gap:3px;color:var(--gold);}
+.testi-stars svg{width:14px;height:14px;}
+.testi-quote{font-size:1.02rem;line-height:1.55;color:var(--text);flex:1;}
+.testi-person{display:flex;align-items:center;gap:12px;}
+.testi-avatar{width:42px;height:42px;border-radius:50%;background:var(--grad-signature);display:flex;align-items:center;justify-content:center;font-family:'Bricolage Grotesque',serif;font-weight:700;font-size:.85rem;color:#0a0a0a;flex-shrink:0;}
+.testi-name{font-weight:600;font-size:.92rem;}
+.testi-meta{font-size:.78rem;color:var(--text-faint);}
+
+/* ============ FAQ ============ */
+.faq-list{max-width:760px;margin-inline:auto;}
+.faq-item{border-bottom:1px solid var(--border-soft);}
+.faq-q{width:100%;display:flex;align-items:center;justify-content:space-between;gap:20px;padding:26px 4px;text-align:left;font-size:1.05rem;font-weight:600;}
+.faq-q svg{width:18px;height:18px;flex-shrink:0;transition:transform .4s var(--ease);color:#FA7800;}
+.faq-item.open .faq-q svg{transform:rotate(45deg);color:var(--ember);}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .5s var(--ease),padding .5s var(--ease);}
+.faq-item.open .faq-a{max-height:220px;padding-bottom:26px;}
+.faq-a p{color:var(--text-dim);max-width:640px;font-size:.95rem;}
+
+/* ============ CTA FINAL ============ */
+.cta-final{
+  border-radius:var(--r-lg);margin-inline:clamp(20px,5vw,48px);padding:clamp(56px,9vw,110px) clamp(24px,6vw,60px);
+  text-align:center;position:relative;overflow:hidden;background:var(--ink);border:1px solid var(--border);
+}
+.cta-final .blob{opacity:.4;}
+.cta-final h2{font-size:clamp(2.1rem,5vw,3.6rem);margin-bottom:18px;position:relative;z-index:2;}
+.cta-final .sub{margin-inline:auto;margin-bottom:38px;position:relative;z-index:2;}
+.cta-final .hero-ctas{position:relative;z-index:2;}
+.cta-email{display:block;margin-top:20px;color:var(--text-faint);font-size:.88rem;position:relative;z-index:2;}
+.cta-email a{color:var(--text-dim);border-bottom:1px solid var(--border);transition:color .3s,border-color .3s;}
+.cta-email a:hover{color:var(--text);border-color:var(--text-dim);}
+
+/* ============ FOOTER ============ */
+footer{border-top:1px solid var(--border-soft);padding-block:56px 32px;}
+.footer-top{display:flex;justify-content:space-between;flex-wrap:wrap;gap:40px;margin-bottom:48px;}
+.footer-brand p{color:var(--text-dim);max-width:280px;margin-top:14px;font-size:.9rem;}
+.footer-cols{display:flex;gap:64px;flex-wrap:wrap;}
+.footer-col h4{font-size:.78rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text-faint);font-family:'IBM Plex Mono',monospace;font-weight:500;margin-bottom:18px;}
+.footer-col a{display:block;color:var(--text-dim);font-size:.92rem;margin-bottom:12px;transition:color .3s;}
+.footer-col a:hover{color:var(--text);}
+.socials{display:flex;gap:12px;}
+.socials a{width:38px;height:38px;border-radius:50%;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;transition:background .3s,transform .3s;}
+.socials a:hover{background:var(--surface-2);transform:translateY(-3px);}
+.socials svg{width:16px;height:16px;}
+.footer-bottom{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;padding-top:28px;border-top:1px solid var(--border-soft);font-size:.8rem;color:var(--text-faint);}
+
+/* ============ RESPONSIVE ============ */
+@media (max-width:1024px){
+  .services-grid{grid-template-columns:repeat(2,1fr);}
+  .workflow{grid-template-columns:repeat(3,1fr);row-gap:36px;}
+  .workflow::before{display:none;}
+  .masonry{column-count:2;}
+}
+@media (max-width:880px){
+  .nav-links{display:none;}
+  .burger{display:flex;}
+  .compare-grid{grid-template-columns:1fr;}
+  .about-grid{grid-template-columns:1fr;}
+  .about-photo-frame{max-width:360px;margin-inline:auto;}
+  .about-text{text-align:center;}
+  .about-text p.sub{margin-inline:auto;}
+  .about-stats{justify-content:center;}
+  .about-text .hero-ctas{justify-content:center;}
+  .stats-bar{grid-template-columns:repeat(2,1fr);row-gap:28px;}
+  .stat:nth-child(2){border-right:none;}
+}
+@media (max-width:640px){
+  .services-grid{grid-template-columns:1fr;}
+  .workflow{grid-template-columns:1fr;row-gap:30px;}
+  .masonry{column-count:1;}
+  .footer-top{flex-direction:column;gap:32px;}
+  .hero-visual .thumb-card{width:150px;}
+  .stats-wrap{margin-top:-40px;}
+}
+</style>
+</head>
+<body>
+
+<!-- ============ NAV ============ -->
+<header class="nav" id="nav">
+  <a href="#top" class="logo">
+    <span class="logo-mark"><svg viewBox="0 0 24 24" fill="none"><polygon points="8,5 20,12 8,19" fill="url(#navgrad)"/><defs><linearGradient id="navgrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FF9500"/><stop offset="1" stop-color="#E85D04"/></linearGradient></defs></svg></span>
+    KYLE JERBEE
+  </a>
+  <nav class="nav-links">
+    <a href="#work">Work</a>
+    <a href="#services">Services</a>
+    <a href="#process">Process</a>
+    <a href="pricing.html">Pricing</a>
+    <a href="#about">About Me</a>
+    <a href="#faq">FAQ</a>
+  </nav>
+  <div class="nav-actions">
+    <a href="#cta" class="btn btn-primary btn-sm">Book a Project</a>
+    <button class="burger" id="burgerBtn" aria-label="Open menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
+    </button>
+  </div>
+</header>
+
+<div class="mobile-menu" id="mobileMenu">
+  <button class="close-btn" id="closeMenuBtn" aria-label="Close menu">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg>
+  </button>
+  <a href="#work">Work</a>
+  <a href="#services">Services</a>
+  <a href="#process">Process</a>
+  <a href="pricing.html">Pricing</a>
+  <a href="#about">About Me</a>
+  <a href="#faq">FAQ</a>
+  <a href="#cta" class="btn btn-primary" style="margin-top:14px;">Book a Project</a>
+</div>
+
+<main id="top">
+<!-- ============ HERO ============ -->
+<section class="hero" id="hero">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="cursor-glow" id="cursorGlow"></div>
+
+  <div class="hero-visual" aria-hidden="true">
+    <div class="marquee"><div class="marquee-track">
+      <!-- set A x2 -->
+      <div class="thumb-card thumb-1"><img src="assets/EL-JDID-UPWORK6.webp"></div>
+      <div class="thumb-card"><img src="assets/thumb-split-face.webp"></div>
+      <div class="thumb-card thumb-2"><img src="assets/learnthumbnails-GGG.webp"></div>
+      <div class="thumb-card thumb-3"><img src="assets/yash thumbnail.webp"></div>
+      <div class="thumb-card thumb-5"><img src="assets/final-resul66t.webp"></div>
+      <div class="thumb-card thumb-7"><img src="assets/final-result45.webp"></div>
+      <div class="thumb-card thumb-1"><img src="assets/final-result00.webp"></div>
+      <div class="thumb-card"><img src="assets/thumb-split-face.webp" alt="Split face thumbnail"></div>
+      <div class="thumb-card thumb-2"><img src="assets/final-result008.webp"></div>
+      <div class="thumb-card thumb-3"><img src="assets/final-result234.webp" ></div>
+      <div class="thumb-card thumb-5"><img src="assets/Stop paying taxes.webp"></div>
+      <div class="thumb-card thumb-7"><img src="assets/Retire in 10 Years.webp"></div>
+    </div></div>
+
+    <div class="marquee"><div class="marquee-track reverse">
+      <div class="thumb-card thumb-4"><img src="assets/Retire in 10 Years.webp"></div>
+      <div class="thumb-card"><img src="assets/thumb-billionaires.webp" alt="All billionaires use this thumbnail"></div>
+      <div class="thumb-card thumb-6"><img src="assets/el-jdid-upwork7.webp"></div>
+      <div class="thumb-card thumb-8"><img src="assets/EL-JDID-UPWORK5.webp"></div>
+      <div class="thumb-card thumb-9"><img src="assets/EL-JDID-UPWORK3.webp"></div>
+      <div class="thumb-card thumb-10"><img src="assets/EL-JDID-UPWORK 1.webp"></div>
+      <div class="thumb-card thumb-4"><img src="assets/EL-JDID-UPWORK4.webp"></div>
+      <div class="thumb-card"><img src="assets/thumb-billionaires.webp" alt="All billionaires use this thumbnail"></div>
+      <div class="thumb-card thumb-6"><img src="assets/EL-JDID-UPWORK2.webp"></div>
+      <div class="thumb-card thumb-8"><img src="assets/Melvin-thumbnail.webp"></div>
+      <div class="thumb-card thumb-9"><img src="assets/final-result7.webp"></div>
+      <div class="thumb-card thumb-10"><img src="assets/final-result.webp"></div>
+    </div></div>
+
+    <div class="marquee"><div class="marquee-track slow">
+      <div class="thumb-card thumb-3"><img src="assets/14.webp"></div>
+      <div class="thumb-card"><img src="assets/3.webp" alt="Split face thumbnail"></div>
+      <div class="thumb-card thumb-2"><img src="assets/13.webp"></div>
+      <div class="thumb-card thumb-5"><img src="assets/12.webp"></div>
+      <div class="thumb-card"><img src="assets/2.webp" alt="All billionaires use this thumbnail"></div>
+      <div class="thumb-card thumb-7"><img src="assets/11.webp"></div>
+      <div class="thumb-card thumb-6"><img src="assets/10.webp"></div>
+      <div class="thumb-card thumb-3"><img src="assets/9.webp"></div>
+      <div class="thumb-card"><img src="assets/1.webp" alt="Split face thumbnail"></div>
+      <div class="thumb-card thumb-2"><img src="assets/8.webp"></div>
+      <div class="thumb-card thumb-5"><img src="assets/6.webp"></div>
+      <div class="thumb-card"><img src="assets/supra-thumbnail.webp" alt="All billionaires use this thumbnail"></div>
+      <div class="thumb-card thumb-7"><img src="assets/5.webp"></div>
+      <div class="thumb-card thumb-6"><img src="assets/4.webp"></div>
+    </div></div>
+  </div>
+  <div class="hero-scrim" aria-hidden="true"></div>
+
+  <div class="hero-content">
+    <p class="eyebrow" style="justify-content:center;"></p>
+    <h1>Thumbnails that make<br>people <span class="grad-text">click.</span></h1>
+    <p class="sub">I design scroll-stopping YouTube thumbnails that help creators turn impressions into clicks using bold visuals, strategic contrast, and a touch of psychology.</p>
+    <div class="hero-ctas">
+      <a href="#cta" class="btn btn-primary">Get Thumbnails <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12,5 19,12 12,19"/></svg></a>
+      <a href="#work" class="btn btn-ghost"><span class="grad-text">View the Work</span></a>
+    </div>
+  </div>
+
+  <div class="scroll-cue"><span></span><span class="line"></span></div>
+</section>
+
+<!-- ============ STATS ============ 
+<div class="stats-wrap">
+  <div class="stats-bar glass reveal">
+    <div class="stat"><div class="stat-num" data-count="500" data-suffix="+">0</div><div class="stat-label">Thumbnails Shipped</div></div>
+    <div class="stat"><div class="stat-num" data-count="48" data-suffix="M+">0</div><div class="stat-label">Views Generated</div></div>
+    <div class="stat"><div class="stat-num" data-count="3.4" data-suffix="×" data-decimal="1">0</div><div class="stat-label">Avg. CTR Lift</div></div>
+    <div class="stat"><div class="stat-num" data-count="24" data-suffix="hrs">0</div><div class="stat-label">Typical Turnaround</div></div>
+  </div>
+</div>-->
+
+<!-- ============ PORTFOLIO ============ -->
+<section class="section" id="work">
+  <div class="container">
+    <div class="section-head center reveal">
+     
+      <h2 class="h2 grad-text">Featured Thumbnails</h2>
+      <p class="sub">Great thumbnails don't happen by chance they're built with strategy, psychology, and bold design. That's exactly what I deliver.
+Take a look at some of my featured thumbnails below.</p>
+    </div>
+
+    <div class="masonry reveal">
+      <div class="thumb-card thumb-1" style="aspect-ratio:16/9;"><img src="assets/learnthumbnails-GGG.webp"></div>
+      <div class="thumb-card thumb-2"style="aspect-ratio:16/9;"><img src="assets/final-result234.webp"></div>
+      <div class="thumb-card thumb-3" style="aspect-ratio:16/9;"><img src="assets/Stop paying taxes.webp"></div>
+      <div class="thumb-card thumb-4" style="aspect-ratio:16/9;"><img src="assets/thumb-billionaires.webp"></div>
+      <div class="thumb-card thumb-5" style="aspect-ratio:16/9;"><img src="assets/final-result45.webp"></div>
+      <div class="thumb-card thumb-6" style="aspect-ratio:16/9;"><img src="assets/final-resul66t.webp"></div>
+      <div class="thumb-card thumb-7" style="aspect-ratio:16/9;"><img src="assets/Retire in 10 Years.webp"></div>
+      <div class="thumb-card thumb-8"style="aspect-ratio:16/9;"><img src="assets/EL-JDID-UPWORK3.webp"></div>
+      <div class="thumb-card thumb-9" style="aspect-ratio:16/9;"><img src="assets/EL-JDID-UPWORK4.webp"></div>
+      <div class="thumb-card thumb-10" style="aspect-ratio:16/9;"><img src="assets/final-result00.webp"></div>
+      <div class="thumb-card thumb-11" style="aspect-ratio:16/9;"><img src="assets/el-jdid-upwork7.webp"></div>
+       <div class="thumb-card thumb-12" style="aspect-ratio:16/9;"><img src="assets/supra-thumbnail.webp"></div>
+       <div class="thumb-card thumb-13" style="aspect-ratio:16/9;"><img src="assets/thumb-split-face.webp"></div>
+      <div class="thumb-card thumb-14"style="aspect-ratio:16/9;"><img src="assets/EL-JDID-UPWORK2.webp"></div>
+      <div class="thumb-card thumb-15" style="aspect-ratio:16/9;"><img src="assets/EL-JDID-UPWORK5.webp"></div>
+      <div class="thumb-card thumb-16" style="aspect-ratio:16/9;"><img src="assets/final-result008.webp"></div>
+      <div class="thumb-card thumb-17"style="aspect-ratio:16/9;"><img src="assets/yash thumbnail.webp"></div>
+      <div class="thumb-card thumb-18" style="aspect-ratio:16/9;"><img src="assets/EL-JDID-UPWORK6.webp"></div>
+
+      
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ BEFORE / AFTER ============ -->
+<section class="section" id="compare" style="background:var(--ink);">
+  <div class="container">
+    <div class="section-head center reveal">
+      <p class="eyebrow" style="justify-content:center;">The Difference</p>
+      <h2 class="h2 grad-text">Before & After</h2>
+      <p class="sub">Same video, same creator: a completely different result. Drag to compare.</p>
+    </div>
+
+    <div class="compare-grid">
+      <div class="compare-block reveal">
+        <div class="compare-frame" data-compare style="--pct:50%;">
+          <div class="compare-layer compare-after thumb-card thumb-1" style="border-radius:0;"><img src="assets/Melvin-thumbnail.webp"></div>
+          <div class="compare-layer compare-before"><img src="assets/plan-1.webp"></div>
+          <span class="compare-label compare-label-before">Before</span>
+          <span class="compare-label compare-label-after">After</span>
+          <div class="compare-handle"><div class="compare-grip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9,6 3,12 9,18"/><polyline points="15,6 21,12 15,18"/></svg></div></div>
+        </div>
+        <p class="compare-stat"></p>
+      </div>
+
+      <div class="compare-block reveal" style="--d:.1s;">
+        <div class="compare-frame" data-compare style="--pct:50%;">
+          <div class="compare-layer compare-after thumb-card thumb-3" style="border-radius:0;"><img src="assets/EL-JDID-UPWORK 1.webp"></div>
+          <div class="compare-layer compare-before"><img src="assets/before-hamrouni.webp"></div>
+          <span class="compare-label compare-label-before">Before</span>
+          <span class="compare-label compare-label-after">After</span>
+          <div class="compare-handle"><div class="compare-grip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9,6 3,12 9,18"/><polyline points="15,6 21,12 15,18"/></svg></div></div>
+        </div>
+        <p class="compare-stat"></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ABOUT ============ -->
+<section class="section" id="about">
+  <div class="container">
+    <div class="about-grid">
+      <div class="about-photo-wrap reveal">
+        <div class="about-glow"></div>
+        <div class="about-photo-frame">
+          <img src="assets/khalil-pdp-instagram.highQ.webp" alt="Portrait of Khalil, thumbnail designer">
+          <span class="about-badge"><span class="about-badge-dot"></span>Available for projects</span>
+        </div>
+      </div>
+
+      <div class="about-text reveal" style="--d:.1s;">
+        <p class="eyebrow">About Me</p>
+        <h2 class="h2">Hey, I'm <span class="grad-text">Kyle,</span></h2>
+        <p class="sub">I've spent the last few years obsessing over what makes people stop scrolling and click one frame, one expression, one contrast choice at a time. Thumbnail design isn't decoration to me; it's the first impression your video ever makes.</p>
+        <p class="sub">I work with creators who take their channel seriously, turning raw footage and rough ideas into thumbnails that convert. No templates, no guesswork every design is built around your content and your audience.</p>
+        <p class="sub">Check out my portfolio to see past work, then email me or reach out on Instagram if you're ready to elevate your channel.</p>
+
+        <!---<div class="about-stats">
+          <div class="about-stat"><div class="about-stat-num">500+</div><div class="about-stat-label">Thumbnails Shipped</div></div>
+          <div class="about-stat"><div class="about-stat-num">3.4×</div><div class="about-stat-label">Avg. CTR Lift</div></div>
+          <div class="about-stat"><div class="about-stat-num">24hrs</div><div class="about-stat-label">Typical Turnaround</div></div>
+        </div>--->
+
+        <div class="hero-ctas">
+          <a href="pricing.html" class="btn btn-primary">Choose Your Package<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12,5 19,12 12,19"/></svg></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SERVICES ============ -->
+<section class="section" id="services">
+  <div class="container">
+    <div class="section-head reveal">
+      <p class="eyebrow">What I Offer</p>
+      <h2 class="h2 grad-text">Design, built around your channel.</h2>
+      <p class="sub">From a single upload to a full visual identity pick what fits how you publish.</p>
+    </div>
+
+    <div class="services-grid">
+      <div class="service-card glass reveal">
+        <div class="service-num">01</div>
+        <h3 class="h3 grad-text">Single Thumbnail</h3>
+        <p>One scroll-stopping design for your next upload, delivered in 24–48 hours.</p>
+      </div>
+      <div class="service-card glass reveal" style="--d:.08s;">
+        <div class="service-num">02</div>
+        <h3 class="h3 grad-text">A/B Test Pack</h3>
+        <p>Three distinct concepts for the same video, so you can test and keep what converts.</p>
+      </div>
+      <div class="service-card glass reveal" style="--d:.16s;">
+        <div class="service-num">03</div>
+        <h3 class="h3 grad-text">Channel Branding</h3>
+        <p>Banners, icons, and end screens a visual system your whole channel can grow into.</p>
+      </div>
+      <div class="service-card glass reveal" style="--d:.24s;">
+        <div class="service-num">04</div>
+        <h3 class="h3 grad-text">Monthly Retainer</h3>
+        <p>Ongoing thumbnail design for creators who publish weekly and can't afford to slow down.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PROCESS ============ -->
+<section class="section" id="process" style="background:var(--ink);">
+  <div class="container">
+    <div class="section-head reveal">
+      <p class="eyebrow">How We Work</p>
+      <h2 class="h2 grad-text">From brief to upload in five steps.</h2>
+    </div>
+
+    <div class="workflow">
+  <div class="wf-step reveal">
+    <div class="wf-num">01</div>
+    <h3 class="grad-text">Brief</h3>
+    <p>Send your title, footage, or rough idea however early-stage.</p>
+  </div>
+
+  <div class="wf-step reveal" style="--d:.08s;">
+    <div class="wf-num">02</div>
+    <h3 class="grad-text">Concept</h3>
+    <p>I sketch two or three directions rooted in contrast and story, not just style.</p>
+  </div>
+
+  <div class="wf-step reveal" style="--d:.16s;">
+    <div class="wf-num">03</div>
+    <h3 class="grad-text">Design</h3>
+    <p>Full production typography, color grading, compositing built to read at 120px.</p>
+  </div>
+
+  <div class="wf-step reveal" style="--d:.24s;">
+    <div class="wf-num">04</div>
+    <h3 class="grad-text">Revise</h3>
+    <p>Two rounds of revisions included, until it's exactly right.</p>
+  </div>
+
+  <div class="wf-step reveal" style="--d:.32s;">
+    <div class="wf-num">05</div>
+    <h3 class="grad-text">Deliver</h3>
+    <p>Final files in every size you need, ready to upload the same day.</p>
+  </div>
+</div>
+</section>
+
+<!-- ============ TESTIMONIALS ============ 
+<section class="section" id="testimonials">
+  <div class="container">
+    <div class="section-head reveal">
+      <p class="eyebrow">Client Words</p>
+      <h2 class="h2">What creators say after working together.</h2>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="testi-row reveal">
+      <div class="testi-card glass">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-quote">My CTR went from 4.1% to 11.3% within a month of switching. That's not a small deal — that's a different channel.</p>
+        <div class="testi-person"><div class="testi-avatar">MT</div><div><div class="testi-name">Marcus T.</div><div class="testi-meta">Tech Reviews · 340K subs</div></div></div>
+      </div>
+      <div class="testi-card glass">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-quote">Fast, professional, and actually understands why a thumbnail works — not just how it looks.</p>
+        <div class="testi-person"><div class="testi-avatar">SC</div><div><div class="testi-name">Sarah Chen</div><div class="testi-meta">Personal Finance · 1.2M subs</div></div></div>
+      </div>
+      <div class="testi-card glass">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-quote">I've hired five designers before Ren. He's the only one who thinks about strategy first, design second.</p>
+        <div class="testi-person"><div class="testi-avatar">JL</div><div><div class="testi-name">Jordan Lee</div><div class="testi-meta">Gaming · 890K subs</div></div></div>
+      </div>
+      <div class="testi-card glass">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-quote">Turnaround is genuinely 24 hours, every time. Never once had to chase a deadline.</p>
+        <div class="testi-person"><div class="testi-avatar">PN</div><div><div class="testi-name">Priya N.</div><div class="testi-meta">Fitness & Wellness · 210K subs</div></div></div>
+      </div>
+    </div>
+  </div>
+</section> -->
+
+<!-- ============ FAQ ============ -->
+<section class="section" id="faq" style="background:var(--ink);">
+  <div class="container">
+    <div class="section-head center reveal">
+      <p class="eyebrow" style="justify-content:center;">Good to Know</p>
+      <h2 class="h2 grad-text">Frequently asked questions.</h2>
+    </div>
+
+    <div class="faq-list reveal">
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">How fast is turnaround?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+        <div class="faq-a"><p>Most single thumbnails ship within 24–48 hours. Rush delivery is available for time-sensitive uploads.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">How many revisions are included?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+        <div class="faq-a"><p>Two rounds are included with every project most creators only need one.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">What do you need from me to start?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+        <div class="faq-a"><p>Your video title, a rough sense of the content, and any reference thumbnails you like. Footage helps but isn't required.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">Do you design channel art and banners?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+        <div class="faq-a"><p>Yes, banners, icons, and end screens are available through the channel branding package.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">What does it cost?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+        <div class="faq-a"><p>Pricing depends on the scope of your project. Send me an email with your channel details, and I'll provide a custom quote based on your goals and upload schedule.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">Can you match my current thumbnail style?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+        <div class="faq-a"><p>Yes. I'll study your existing branding first and either sharpen it or evolve it, depending on what your channel needs.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FINAL CTA ============ -->
+<section class="section" id="cta">
+  <div class="cta-final reveal">
+    <div class="blob blob-1" style="width:400px;height:400px;"></div>
+    <div class="blob blob-2" style="width:360px;height:360px;"></div>
+    <p class="eyebrow" style="justify-content:center;position:relative;z-index:2;">Let's Work Together</p>
+    <h2>Ready for thumbnails<br>that <span class="grad-text">convert?</span></h2>
+    <p class="sub">I take on a limited number of creators each month to protect turnaround and quality.</p>
+    <div class="hero-ctas">
+      <a href="https://mail.google.com/mail/?view=cm&fs=1&to=kylejerbee@gmail.com" target="_blank" class="btn btn-primary">Let's work together<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12,5 19,12 12,19"/></svg></a>
+    </div>
+    <!---<span class="cta-email">or email <a href="mailto:hello@renkato.design">hello@renkato.design</a></span>--->
+  </div>
+</section>
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="container">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="#top" class="logo"><span class="logo-mark"><svg viewBox="0 0 24 24" fill="none"><polygon points="8,5 20,12 8,19" fill="url(#footgrad)"/><defs><linearGradient id="footgrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FF9500"/><stop offset="1" stop-color="#E85D04"/></linearGradient></defs></svg></span>KYLE JERBEE</a>
+        <p>Thumbnail design for creators who take growth seriously.</p>
+        <div class="socials" style="margin-top:20px;">
+          <a href="https://x.com/kylejerbee" aria-label="X / Twitter"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.9 2H22l-7.6 8.7L23 22h-6.9l-5.4-6.6L4.5 22H1.4l8.2-9.4L1 2h7l4.9 6z"/></svg></a>
+          <a href="https://www.instagram.com/kylejerbee/" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg></a>
+          <a href="https://mail.google.com/mail/?view=cm&fs=1&to=kylejerbee@gmail.com"target="_blank" aria-label="Email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="3"/><polyline points="3,7 12,13 21,7"/></svg></a>
+        </div>
+      </div>
+      <div class="footer-cols">
+        <div class="footer-col">
+          <h4>Navigate</h4>
+          <a href="#work">Work</a>
+          <a href="#services">Services</a>
+          <a href="#process">Process</a>
+          <a href="pricing.html">Pricing</a>
+  <a href="#about">About Me</a>
+  <a href="#faq">FAQ</a>
+        </div>
+        <div class="footer-col">
+          <h4>Contact</h4>
+          <a href="https://mail.google.com/mail/?view=cm&fs=1&to=kylejerbee@gmail.com"target="_blank">kylejerbee@gmail.com</a>
+          <!--<a href="#cta">Book a call</a>-->
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Kyle Jerbee. All rights reserved.</span>
+      <span>Designed &amp; built with care.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  // NAV scroll state
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 40);
+  }, {passive:true});
+
+  // MOBILE MENU
+  const burger = document.getElementById('burgerBtn');
+  const closeBtn = document.getElementById('closeMenuBtn');
+  const menu = document.getElementById('mobileMenu');
+  const openMenu = () => { menu.classList.add('open'); document.body.style.overflow='hidden'; };
+  const closeMenu = () => { menu.classList.remove('open'); document.body.style.overflow=''; };
+  burger.addEventListener('click', openMenu);
+  closeBtn.addEventListener('click', closeMenu);
+  menu.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMenu));
+
+  // REVEAL ON SCROLL
+  const revealEls = document.querySelectorAll('.reveal');
+  if('IntersectionObserver' in window){
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if(entry.isIntersecting){
+          entry.target.classList.add('is-visible');
+          io.unobserve(entry.target);
+        }
+      });
+    }, {threshold:.15, rootMargin:'0px 0px -60px 0px'});
+    revealEls.forEach(el => io.observe(el));
+  } else {
+    revealEls.forEach(el => el.classList.add('is-visible'));
+  }
+
+  // STAT COUNTERS
+  const counters = document.querySelectorAll('.stat-num');
+  const countIO = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(!entry.isIntersecting) return;
+      const el = entry.target;
+      const target = parseFloat(el.dataset.count);
+      const suffix = el.dataset.suffix || '';
+      const decimals = el.dataset.decimal ? parseInt(el.dataset.decimal) : 0;
+      const duration = 1600;
+      const start = performance.now();
+      function tick(now){
+        const p = Math.min((now - start) / duration, 1);
+        const eased = 1 - Math.pow(1 - p, 3);
+        const val = target * eased;
+        el.textContent = val.toFixed(decimals) + suffix;
+        if(p < 1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+      countIO.unobserve(el);
+    });
+  }, {threshold:.5});
+  counters.forEach(el => countIO.observe(el));
+
+  // FAQ ACCORDION
+  document.querySelectorAll('.faq-item').forEach(item => {
+    const q = item.querySelector('.faq-q');
+    q.addEventListener('click', () => {
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item.open').forEach(o => {
+        if(o !== item){ o.classList.remove('open'); o.querySelector('.faq-q').setAttribute('aria-expanded','false'); }
+      });
+      item.classList.toggle('open', !isOpen);
+      q.setAttribute('aria-expanded', String(!isOpen));
+    });
+  });
+
+  // BEFORE / AFTER SLIDERS
+  document.querySelectorAll('[data-compare]').forEach(frame => {
+    let dragging = false;
+    const setPct = (clientX) => {
+      const rect = frame.getBoundingClientRect();
+      let pct = ((clientX - rect.left) / rect.width) * 100;
+      pct = Math.max(0, Math.min(100, pct));
+      frame.style.setProperty('--pct', pct + '%');
+    };
+    frame.addEventListener('pointerdown', (e) => {
+      dragging = true;
+      frame.setPointerCapture(e.pointerId);
+      setPct(e.clientX);
+    });
+    frame.addEventListener('pointermove', (e) => { if(dragging) setPct(e.clientX); });
+    frame.addEventListener('pointerup', () => dragging = false);
+    frame.addEventListener('pointercancel', () => dragging = false);
+
+    const handle = frame.querySelector('.compare-handle');
+    handle.setAttribute('tabindex','0');
+    handle.setAttribute('role','slider');
+    handle.setAttribute('aria-label','Drag to compare before and after');
+    handle.addEventListener('keydown', (e) => {
+      const current = parseFloat(getComputedStyle(frame).getPropertyValue('--pct')) || 50;
+      if(e.key === 'ArrowLeft'){ frame.style.setProperty('--pct', Math.max(0,current-5)+'%'); }
+      if(e.key === 'ArrowRight'){ frame.style.setProperty('--pct', Math.min(100,current+5)+'%'); }
+    });
+  });
+
+  // CURSOR GLOW (hero only, pointer devices only)
+  const hero = document.getElementById('hero');
+  const glow = document.getElementById('cursorGlow');
+  if(window.matchMedia('(pointer:fine)').matches){
+    hero.addEventListener('mousemove', (e) => {
+      const rect = hero.getBoundingClientRect();
+      glow.style.setProperty('--cx', (e.clientX - rect.left) + 'px');
+      glow.style.setProperty('--cy', (e.clientY - rect.top) + 'px');
+    });
+    hero.addEventListener('mouseleave', () => { glow.style.opacity = '0'; });
+    hero.addEventListener('mouseenter', () => { glow.style.opacity = '1'; });
+  } else {
+    glow.style.display = 'none';
+  }
+})();
+</script>
+</body>
+</html>
